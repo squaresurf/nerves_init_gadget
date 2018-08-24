@@ -15,7 +15,7 @@ defmodule Nerves.InitGadget.Application do
       worker(Nerves.InitGadget.SSHConsole, [merged_opts])
     ]
 
-    opts = [strategy: :one_for_one, name: Nerves.InitGadget.Supervisor]
+    opts = [strategy: :rest_for_one, name: Nerves.InitGadget.Supervisor]
     Supervisor.start_link(children, opts)
   end
 end
