@@ -1,5 +1,11 @@
 # Changelog
 
+## Unmerged Changes
+
+* New features
+  * Added support for configuration of usb gadget devices using the
+    `usb_gadget` library (when using a compatible Nerves system).
+
 ## v0.5.0
 
 * New features

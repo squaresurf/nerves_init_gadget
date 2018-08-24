@@ -3,7 +3,7 @@ defmodule Nerves.InitGadget.Options do
 
   alias Nerves.InitGadget.Options
 
-  defstruct ifname: "usb0",
+  defstruct ifname: "bond0",
             address_method: :linklocal,
             mdns_domain: "nerves.local",
             node_name: nil,

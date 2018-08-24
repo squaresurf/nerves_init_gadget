@@ -4,6 +4,13 @@ defmodule Nerves.InitGadget.NetworkManager do
   use GenServer
   require Logger
 
+  alias Nerves.InitGadget.{
+    GadgetDevices,
+    Options
+  }
+
+  @moduledoc false
+
   defmodule State do
     @moduledoc false
     defstruct ip: nil, is_up: nil, opts: nil
@@ -16,6 +23,11 @@ defmodule Nerves.InitGadget.NetworkManager do
   def init(opts) do
     # Register for updates from system registry
     SystemRegistry.register()
+
+    # We need to recalculate opts here, in case the target system doesn't
+    # support the RNDIS USB gadget. In that case, we want to default to the
+    # usb0 compiled-in gadget Ethernet interface like in previous versions.
+    opts = recalculate_opts(opts)
 
     state =
       %State{opts: opts}
@@ -132,6 +144,16 @@ defmodule Nerves.InitGadget.NetworkManager do
     })
 
     state
+  end
+
+  defp recalculate_opts(opts) do
+    configured_ifname = Application.get_env(:nerves_init_gadget, :ifname)
+
+    if is_nil(configured_ifname) && GadgetDevices.status() != :ok do
+      Options.load_config(%Options{ifname: "usb0"})
+    else
+      opts
+    end
   end
 
   defp resolve_mdns_name(nil), do: nil
