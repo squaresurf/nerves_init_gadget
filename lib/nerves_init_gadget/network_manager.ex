@@ -187,6 +187,11 @@ defmodule Nerves.InitGadget.NetworkManager do
 
       case :net_kernel.start([new_name]) do
         {:ok, _} ->
+          if cookie = opts.cookie do
+            to_cookie(cookie, opts)
+            |> Node.set_cookie()
+          end
+
           Logger.debug("Restarted Erlang distribution as node #{inspect(new_name)}")
 
         {:error, reason} ->
@@ -239,4 +244,22 @@ defmodule Nerves.InitGadget.NetworkManager do
   defp to_node_name(nil, _host), do: nil
   defp to_node_name(_name, nil), do: nil
   defp to_node_name(name, host), do: :"#{name}@#{host}"
+
+  defp to_cookie(:host, opts) do
+    opts.host_cookie
+    |> to_cookie(opts)
+  end
+
+  defp to_cookie(cookie, _opts) when is_binary(cookie) do
+    String.to_atom(cookie)
+  end
+
+  defp to_cookie(cookie, _opts) when is_atom(cookie) do
+    cookie
+  end
+
+  defp to_cookie(cookie, _opts) do
+    Logger.warn("Invalid cookie #{inspect(cookie)}")
+    nil
+  end
 end

@@ -247,7 +247,8 @@ config :nerves_init_gadget,
   address_method: :dhcpd,
   mdns_domain: "nerves.local",
   node_name: nil,
-  node_host: :mdns_domain
+  node_host: :mdns_domain,
+  cookie: :host
 ```
 
 The above are the defaults and should work for most users. The following
@@ -329,6 +330,14 @@ ssh nerves.local
 To exit the SSH session, type `~.`. This is an `ssh` escape sequence (See the
 [ssh man page](https://linux.die.net/man/1/ssh) for other escape sequences).
 Typing `Ctrl+D` or `logoff` at the IEx prompt to exit the session won't work.
+
+### `:cookie`
+
+The cookie can be set by passing a string value. The cookie can be set to the
+cookie from the host machine by specifying `:host`.
+
+Default is `nil` which uses the cookie from the `vm.args` or a cookie file
+on the target.
 
 ## Troubleshooting
 
